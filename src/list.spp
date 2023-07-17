@@ -6,7 +6,7 @@ use std::manipulator::Manipulator;
 use std::mem_seq::MemSeq;
 
 
-@meta::friend(std::List[T])
+@meta::private(friends=(std::List[T]))
 cls ListNode[T] {
     inner: T;
     next: std::Opt[ListNode[T]];

@@ -22,7 +22,7 @@ sup[B: std::AbstractStrBackend] std::Str[B] {
     }
 
     @meta::public
-    fn clear(self: &mut Self) -> std::Void {#
+    fn clear(self: &mut Self) -> std::Void {
         self.backend.replace(0, self.backend.len, "");
     }
 }

@@ -13,8 +13,7 @@ fn fail[T](val: T) -> std::Opt[T] {
 }
 
 
-@meta::public
-@meta::friend(std::pass, std::fail)
+@meta::public(friends=(std::pass, std::fail))
 cls Opt[T] {
     val: std::Vec[T];
 }

@@ -10,7 +10,6 @@ use std::Ret::Ret;
 cls Allocator[T]{}
 
 
-
 sup[T] std::Allocator[T] {
     """
     The standard allocator uses the `malloc`, `realloc` and `free` methods from the cstd library, which map to the
@@ -19,8 +18,8 @@ sup[T] std::Allocator[T] {
       - allocated_type: Type of object wrapping the (multiple) allocations for `T`
     """
     
-    use ValueType as T;
-    use AllocType as std::MemSeq[T];
+    @meta::public use ValueType as T;
+    @meta::public use AllocType as std::MemSeq[T];
 
     @meta::static_method
     @meta::virtual_method

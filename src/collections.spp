@@ -8,8 +8,13 @@ use std::num::Num;
 @meta::public
 cls Iterable[T] {}
 sup[T] std::Iterable[T] {
-    @std::abstract_method @meta::public fn iter(self: &Self) -> std::Iter[Self, T] {}
-    @std::abstract_method @meta::public fn iter_mut(self: &mut Self) -> std::Iter[Self, T] {}
+    @meta::abstract_method
+    @meta::public
+    fn iter(self: &Self) -> std::Iter[Self, T] {}
+
+    @mets::abstract_method
+    @meta::public
+    fn iter_mut(self: &mut Self) -> std::Iter[Self, T] {}
 }
 
 
