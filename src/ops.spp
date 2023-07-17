@@ -1,0 +1,10 @@
+mod std::ops;
+
+
+@meta::public
+cls BitNot[Output] {}
+sup[Output=std::Bool] BitNot[Output] {
+    @std::abstract_method
+    @meta::public
+    fn __bit_not__(self: &Self) -> Output {}
+}

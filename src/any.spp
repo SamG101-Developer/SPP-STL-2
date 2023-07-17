@@ -1,0 +1,31 @@
+mod std::any;
+
+
+cls BaseStorage {}
+
+cls Storage[T] { value: T; }
+
+cls Any { storage: BaseStorage; }
+
+
+sup Any {
+    @meta::static_method
+    @meta::public
+    fn new[T](value: T) -> std::Any {
+        ret std::Any{storage: std::Storage{value}};
+    }
+
+    @meta::public
+    fn to[T](self: Self) -> T {
+        let cast_storage = std::down_cast[std::BaseStorage[T]](self.storage);
+        ret cast_storage.value;
+    }
+}
+
+
+sup std::Default for std::Any {
+    @meta::public
+    fn default() -> Self {
+        ret std::Any::new[std::Void]();
+    }
+}

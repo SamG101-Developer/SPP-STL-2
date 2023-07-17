@@ -1,0 +1,36 @@
+@meta::public
+mod std::list;
+
+use std::collections::Seq;
+use std::manipulator::Manipulator;
+use std::mem_seq::MemSeq;
+
+
+@meta::friend(std::List[T])
+cls ListNode[T] {
+    inner: T;
+    next: std::Opt[ListNode[T]];
+}
+
+
+@meta::public
+cls List[T] {
+    head: ListNode[T];
+}
+
+
+sup[T] std::Seq[T] for std::List[T] {
+    @meta::public
+    fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+        let new_node = std::ListNode{inner: item};
+        if self.is_empty() { self.head = new_node; }
+        else { self.head, new_node.next = (new_node, self.head); }
+    }
+
+    @meta::public
+    fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::void, std::MemErr] {
+        let new_node = std::ListNode{inner: item};
+        if self.is_empty() { self.head = new_node; }
+        else { self.tail.next = std::some(new_node); }
+    }
+}

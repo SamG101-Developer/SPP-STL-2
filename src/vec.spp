@@ -1,0 +1,74 @@
+@meta::public
+mod std::vec;
+
+use std::alloc::Allocator;
+use std::num::Num;
+use std::mem_seq::MemSeq;
+
+
+@meta::public
+cls Vec[T, A: std::Allocator] {
+    """
+    A vector is a collection of contiguously stored elements in memory. It wraps a fixed size std::MemSeq[T] object, and
+    will reallocate its size as necessary.
+      - len: number of elements in the vector
+      - cap: total capacity the current MemSeq can store
+      - data: std::MemSeq object storing contiguous elements
+    """
+    len: std::Num;
+    cap: std::Num;
+    data: std::MemSeq[T];
+}
+
+
+sup[T, A: std::Allocator = std::Allocator[T]] std::Vec[T, A] {
+    @meta::static_method
+    @meta::public
+    fn new() -> std::Vec[T, A] {
+        """
+        Create a new empty vector, with length and capacity set to 0, and the data set to an empty memory sequence.
+        """
+        let data = A::allocate(0);
+        ret std::Vec[T, A]{len: 0, cap: 0, data};
+    }
+
+    @meta::static_method
+    @meta::public
+    fn new(...elements: T) -> std::Vec[T, A] {
+        """
+        Create a new vector with a number of elements already in the vector. Reserve the exact amount of elements
+        requried, and emplace them all to the tail.
+        """
+        let vec = std::Vec[T, A]::new();
+        vec.reserve(elements.len);
+        vec.emplace_tail(elements);
+        ret vec;
+    }
+
+    @meta::virtual_method
+    @meta::public
+    fn reserve(self: &mut Self, n: std::Num) -> std::Void {
+        self.cap += n;
+        A::reallocate(&mut self.data, self.cap);
+    }
+
+    @meta::virtual_method
+    @meta::public
+    fn reserve_auto(self: &mut Self) -> std::Void {
+        self.reserve(self.cap.copy());
+    }
+
+    @meta::virtual_method
+    @meta::public
+    fn shrink_to(self: &mut Self, n: std::Num) -> std::Void {
+        self.cap = if n == -1 {self.len.copy();} else {n;};
+        A::reallocate(&mut self.data, self.cap);
+    }
+
+    @meta::virtual_method
+    @meta::public
+    fn shrink_auto(self: &mut Self) -> std::Void {
+        self.shrink_to(-1);
+    }
+}
+

@@ -1,0 +1,68 @@
+mod std::num;
+
+use std::vec::Vec;
+use std::cmp::PartOrd;
+use std::alg::Alg;
+
+
+@meta::public
+cls Num {
+    real_part: std::InnerNum;
+    imag_part: std::InnerNum;
+}
+
+sup std::Num {
+    @meta::public
+    fn copy_real(self: &Self) -> std::Num {
+        let real_part = self.real_part.copy();
+        ret std::Num{real_part, imag_part: std::InnerNum::new()};
+    }
+
+    @meta::public
+    fn copy_imag(self: &Self) -> std::Num {
+        let imag_part = self.imag_part.copy();
+        ret std::Num{real_part: std::InnerNum::new(), imag_part};
+    }
+
+    @meta::public
+    fn is_complex(self: &Self) -> std::Bool {
+        ret self.imag_part.is_zero();
+    }
+
+    @meta::public
+    fn is_zero(self: &Self) -> std::Bool {
+        ret self.real_part.is_zero() && self.imag_part.is_zero();
+    }
+}
+
+
+sup std::ops::Add for std::Num {
+    @meta::public
+    fn __add__(self: &Self, that: Self) -> Self {
+        let real_part = self.real_part + that.real_part;
+        let imag_part = self.imag_part + that.imag_part;
+        ret Self{real_part, imag_part};
+    }
+}
+
+sup std::ops::AddAssign for std::Num {
+    @meta::public
+    fn __add_assign__(self: &Self, that: Self) -> std::Void {
+        self.real_part += that.real_part;
+        self.imag_part += that.imag_part;
+    }
+}
+
+
+@meta::public
+cls InnerNum {
+    mut int_part: std::Vec[SingleDigitT];
+    mut dec_part: std::Vec[SingleDigitT];
+    is_imag: std::Bool;
+    base: std::cstd::U32;
+}
+
+sup std::InnerNum {
+    use SingleDigitT as std::cstd::U32;
+    use DoubleDigitT as std::cstd::U64;
+}

@@ -1,0 +1,48 @@
+mod std::func;
+
+
+@meta::public
+cls FnOnce[R, Args: std::Tup] {}
+
+@meta::public
+cls FnMut[R, Args: std::Tup] {}
+
+@meta::public
+cls Fn[R, Args: std::Tup] {
+    __virtual__: std::Bool;
+    __abstract__: std::Bool;
+    __static__: std::Bool;
+}
+
+
+sup[R, Args: std::Tup] FnOnce[R, Args] {
+    @meta::abstract_method
+    @meta::public
+    fn __call_once__(self: Self, args: Args) -> R {}
+}
+
+sup[R, Args: std::Tup] FnMut[R, Args] {
+    @meta::abstract_method
+    @meta::public
+    fn __call__mut__(self: &mut Self, args: Args) -> R {}
+}
+
+sup[R, Args: std::Tup] Fn[R, Args] {
+    @meta::abstract_method
+    @meta::public
+    fn __call_ref__(self: &Self, args: Args) -> R {}
+}
+
+sup[R, Args: std::Tup] FnOnce[R, Args] for FnMut[R, Args] {
+    @meta::public
+    fn __call_once__(self: Self, args: Args) -> R {
+        ret self.__call_mut__(...args);
+    }
+}
+
+sup[R, Args: std::Tup] FnMut[R, Args] for Fn[R, Args] {
+    @meta::public
+    fn __call_mut__(self: Self, args: Args) -> R {
+        ret self.__call_ref__(...arfs);
+    }
+}

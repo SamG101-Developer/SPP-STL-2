@@ -1,0 +1,61 @@
+priv mod std::str_backend::rope_str;
+
+use std::allocator::Allocator;
+use std::char::Char;
+use std::mem_seq::MemSeq;
+use std::num::Num;
+use std::string_backend::abstract_str::AbstractStr;
+
+
+pub cls RopeStr[A: std::Allocator = std::Allocator, M: std::Manipulator = std::Manipulator] {
+    prot mut data: std::MemSeq[std::Char];
+    prot mut lhs: std::Opt[Self];
+    prot mut rhs: std::Opt[Self];
+    prot mut len: std::Num;
+}
+
+
+sup[A: std::Allocator, M: std::Manipulator] std::str_backend::RopeStr[A] {
+    @std::static_method
+    pub fn new(data: std::MemSeq[std::Char]) -> Self {
+        ret std::str_backend::RopeStr{data, lhs: std::none(), rhs: std::none(), len: data.length()};
+    }
+
+    @std::static_method
+    pub fn new(lhs: Self, rhs: Self) -> Self {
+        let len = lhs.len + rhs.len;
+        ret std::str_backend::RopeStr{data: std::MemSeq[std::Char]::new(), lhs, rhs, len};
+    }
+}
+
+
+sup[A: std::Allocator, M: std::Manipulator] std::str_backend::AbstractStr[A] for std::str_backend::RopeStr[A] {
+    pub fn length(self: &Self) -> std::Num {
+        ret self.len.copy();
+    }
+
+    pub fn insert(self: &mut Self, index: std::Num, that: Self) -> std::Void {
+        index %= self.len;
+        if self.lhs.is_some() {
+            A::reallocate(&mut self.data, self.len + that.len.copy());
+            M::move(self.data + index, self.data + index + that.len.copy());
+            M::move(that.data, self.data + index);
+            self.len = self.data.length();
+        }
+    }
+
+    pub fn substring(self: &Self, start: std::Num, end: std::Num) -> Self {
+        start, end = (start % self.len, end % self.len);
+
+        ret if start == end { Self::new(); }
+        elif start == 0 && end == self.len { self.copy(); }
+        elif self.len.to_bool() {
+            let mut new_data = A::allocate(end - start + 1);
+            M::copy(self.data.copy(), &mut new_data);
+            Self::new(new_data); }
+
+        elif end <= self.lhs.len { self.lhs.substring(start, end); }
+        elif start >= self.rhs.len { self.rhs.substring(start - self.lhs.length, end - self.lhs.length); }
+        else { Self::new(self.lhs.substring(start, self.lhs.len - 1), self.rhs.substring(0, end - self.lhs.length)); };
+    }
+}

@@ -1,0 +1,58 @@
+@meta::public
+mod std::monad;
+
+
+@meta::public
+cls Monad[T] {}
+
+sup[T] Monad[T] {
+    @meta::abstract_method
+    @meta::public
+    fn unwrap(self: Self) -> T {}
+
+    @meta::abstract_method
+    @meta::public
+    fn unwrap_or(self: Self, that: T) -> T {}
+
+    @meta::abstract_method
+    @meta::public
+    fn unwrap_else(self: Self, func: std::Fn[T, ()]) -> T {}
+
+    @meta::abstract_method
+    @meta::public
+    fn map[U](self: Self, func: std::Fn[U, (T)]) -> std::Monad[U] {}
+
+    @meta::abstract_method
+    @meta::public
+    fn map_or[U](self: Self, func: std::Fn[U, (T)], that: U) -> U {}
+
+    @meta::abstract_method
+    @meta::public
+    fn map_else[U](self: Self, func: std::Fn[U, (T)], that: std::Fn[T, ()]) -> std::Monad[U] {}
+
+    @meta::abstract_method
+    @meta::public
+    fn and_then(self: Self, that: std::FnOnce[std::Monad[U], (T)]) -> std::Monad[U] {}
+
+    @meta::abstract_method
+    @meta::public
+    fn or_else(self: Self, that: std::Fn[std::Monad[T], ()]) -> std::Monad[T] {}
+}
+
+
+sup[T] std::ops::And for std::Monad[T] {
+    @meta::public
+    fn __or__(self: Self, that: Self) -> Self {
+        ret if self.is_some() { self; };
+        ret if self.is_none() { that; };
+        ret std::none();
+    }
+}
+
+sup[T] std::ops::Or for std::Monad[T] {
+    @meta::public
+    fn __and__(self: Self, that: Self) -> Self {
+        ret if self.is_some() && that.is_some() { other; };
+        ret std::none();
+    }
+}
