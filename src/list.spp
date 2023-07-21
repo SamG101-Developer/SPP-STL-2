@@ -1,4 +1,3 @@
-@meta::public
 mod std::list;
 
 use std::collections::Seq;
@@ -13,15 +12,13 @@ cls ListNode[T] {
 }
 
 
-@meta::public
 cls List[T] {
     head: ListNode[T];
 }
 
 
 sup[T] std::Seq[T] for std::List[T] {
-    @meta::public
-    fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+        fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
         let new_node = std::ListNode{inner: item};
         if self.is_empty() == {
             true => self.head = new_node;
@@ -29,8 +26,7 @@ sup[T] std::Seq[T] for std::List[T] {
         };
     }
 
-    @meta::public
-    fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::void, std::MemErr] {
+        fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::void, std::MemErr] {
         let new_node = std::ListNode{inner: item};
         if self.is_empty() == {
             true => self.head = new_node;

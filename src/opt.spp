@@ -1,13 +1,10 @@
-@meta::public
 mod std::opt;
 
 
-@meta::public
 fn pass[T](val: T) -> std::Opt[T] {
     ret std::Opt{ val: std::Vec::new(val) };
 }
 
-@meta::public
 fn fail[T](val: T) -> std::Opt[T] {
     ret std::Opt{ val: std::Vec::new() };
 }
@@ -22,31 +19,26 @@ cls Opt[T] {
 sup[T] Opt[T] {
     @meta::public use ValueType as T;
 
-    @meta::public
-    fn is_some(self: &Self) -> std::Bool {
+        fn is_some(self: &Self) -> std::Bool {
         ret self.val.is_empty().not();
     }
 
-    @meta::public
-    fn is_some_and(self: Self, func: std::FnOnce[std::Bool, (T)]) -> std::Bool {
+        fn is_some_and(self: Self, func: std::FnOnce[std::Bool, (T)]) -> std::Bool {
         ret self.is_some() && self.val.take(0) |> func();
     }
 
-    @meta::public
-    fn is_none(self: &Self) -> std::Bool {
+        fn is_none(self: &Self) -> std::Bool {
         ret self.val.is_empty();
     }
 
-    @meta::public
-    fn pass_or[U](self: &Self, error: U) -> std::Ret[T, U] {
+        fn pass_or[U](self: &Self, error: U) -> std::Ret[T, U] {
         ret if self.is_some() == {
             true => self.unwrap() |> std::pass();
             else => error |> std::fail();
         };
     }
 
-    @meta::public
-    fn pass_else(self: &Self, func: std::Fn[E, ()]) -> std::Ret[T, E] {
+        fn pass_else(self: &Self, func: std::Fn[E, ()]) -> std::Ret[T, E] {
         ret if self.is_some() == {
             true => self.unwrap() |> std::pass();
             else => func() |> std::fail();
@@ -56,61 +48,53 @@ sup[T] Opt[T] {
 
 
 sup[T] std::Monad[T] for std::Opt[T] {
-    @meta::public
-    fn unwrap(self: Self) -> T {
+        fn unwrap(self: Self) -> T {
         ret self.val.take(0);
     }
 
-    @meta::public
-    fn unwrap_or(self: Self, that: T) -> T {
+        fn unwrap_or(self: Self, that: T) -> T {
         ret if self.is_some() == {
             true => self.unwrap();
             else => that;
         };
     }
 
-    @meta::public
-    fn unwrap_else(self: Self, func: std::Fn[T, ()]) -> T {
+        fn unwrap_else(self: Self, func: std::Fn[T, ()]) -> T {
         ret if self.is_some() == {
             true => self.unwrap();
             else => func();
         };
     }
 
-    @meta::public
-    fn map[U](self: Self, func: std::Fn[U, (T)]) -> std::Opt[U] {
+        fn map[U](self: Self, func: std::Fn[U, (T)]) -> std::Opt[U] {
         ret if self.is_some() == {
             true => self.unwrap() |> func |> std::some;
             else => std::none();
         };
     }
 
-    @meta::public
-    fn map_or[U](self: Self, func: std::Fn[U, (T)], that: U) -> U {
+        fn map_or[U](self: Self, func: std::Fn[U, (T)], that: U) -> U {
         ret if self.is_some() == {
             true => self.map(func);
             else => that;
         };
     }
 
-    @meta::public
-    fn map_else[U](self: Self, func: std::Fn[U, (T)], that: std::Fn[T, ()]) -> std::Opt[U] {
+        fn map_else[U](self: Self, func: std::Fn[U, (T)], that: std::Fn[T, ()]) -> std::Opt[U] {
         ret if self.is_some() == {
             true => self.map(func);
             else => that();
         };
     }
 
-    @meta::public
-    fn and_then(self: Self, that: std::FnOnce[std::Monad[U], (T)]) -> std::Opt[U] {
+        fn and_then(self: Self, that: std::FnOnce[std::Monad[U], (T)]) -> std::Opt[U] {
         ret if self.is_some() == {
             true => self |> that;
             else => std::none();
         };
     }
 
-    @meta::public
-    fn or_else(self: Self, that: std::Fn[std::Monad[T], ()]) -> std::Opt[T] {
+        fn or_else(self: Self, that: std::Fn[std::Monad[T], ()]) -> std::Opt[T] {
         ret if self.is_some() == {
             true => self;
             else => that();
@@ -120,8 +104,7 @@ sup[T] std::Monad[T] for std::Opt[T] {
 
 
 sup[T] std::ops::BinXor for std::Opt[T] {
-    @meta::public
-    fn __xor__(self: &Self, that: Self) -> Self {
+        fn __xor__(self: &Self, that: Self) -> Self {
         ret if self.is_some() ^ that.is_some() == {
             self.is_some() => self;
             that.is_some() => that;

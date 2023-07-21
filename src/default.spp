@@ -1,11 +1,8 @@
-@meta::public
 mod std::detault;
 
 
-@meta::public
 cls Default {}
 sup Default {
     @meta::abstract_method
-    @meta::public
-    fn create_default() -> Self {}
+        fn create_default() -> Self {}
 }

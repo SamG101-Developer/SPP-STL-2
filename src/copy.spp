@@ -1,11 +1,8 @@
-@meta::public
 mod std::copy;
 
 
-@meta::public
 cls Copy {}
 sup std::Copy {
     @meta::abstract_method
-    @meta::public
-    fn copy() -> Self {}
+        fn copy() -> Self {}
 }

@@ -5,20 +5,16 @@ use std::manipulator::Manipulator;
 use std::num::Num;
 
 
-@meta::public
 cls Iterable[T] {}
 sup[T] std::Iterable[T] {
     @meta::abstract_method
-    @meta::public
-    fn iter(self: &Self) -> std::Iter[Self, T] {}
+        fn iter(self: &Self) -> std::Iter[Self, T] {}
 
     @mets::abstract_method
-    @meta::public
-    fn iter_mut(self: &mut Self) -> std::Iter[Self, T] {}
+        fn iter_mut(self: &mut Self) -> std::Iter[Self, T] {}
 }
 
 
-@meta::public
 cls Collection[T, A: std::Alloc] { mut len: std::Num; }
 sup[T, A: std::Allocator] std::Collection[T, A] {
     """
@@ -30,8 +26,7 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
     use AllocType as A;
 
     @meta::virtual_method
-    @meta::public
-    fn length(self: &Self) -> std::Num {
+        fn length(self: &Self) -> std::Num {
         """
         Standard length() method used to get the length of the collection. A method is defined so that if the length
         must be determined algorithmically, and not by using self.length, then this is possible. The default
@@ -41,8 +36,7 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
     }
 
     @meta::virtual_method
-    @meta::public
-    fn is_empty(self: &Self) -> std::Bool {
+        fn is_empty(self: &Self) -> std::Bool {
         """
         The is_empty() method is used to check is a collection is an empty collection. An empty collection is a
         collection containing 0 elements. The default implementation is to check self.length against 0, but this can be
@@ -52,8 +46,7 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
     }
 
     @meta::virtual_method
-    @meta::public
-    fn clear(self: &mut Self) -> std::Void {
+        fn clear(self: &mut Self) -> std::Void {
         """
         The clear() method is used to clear a collection of all its elements. This will almost always have to be
         re-implemented, unless the derived class is also abstract. The default implementation is to set the self.length
@@ -64,13 +57,11 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
 }
 
 
-@meta::public
 cls Seq[T, A: std::Alloc] {}
 
 sup[T, A: std::Alloc] std::Seq {
     @meta::abstract_method
-    @meta::public
-    fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+        fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
         """
         The emplace_head(T) method adds a new element to the beginning of the sequence. This is generally implemented as
         a wrapper to inserting at the 0th index. However, in certain collections, ie std::Deque[T], there are more
@@ -79,8 +70,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+        fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
         """
         The emplace_tail(T) method adds a new element to the end of the sequence. This normally has a more optimal
         implementation as a special-case optimization, for example in std::Vec[T], the end-insertion required no
@@ -89,8 +79,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn emplace(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+        fn emplace(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
         """
         The emplace(T, std::Num) method adds a new element into the middle of a sequence -- random insertion. This is
         generally the most suboptimal insertion method for a sequence because of element shifting.
@@ -98,8 +87,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn pop_head(self: &mut Self) -> std::Opt[T] {
+        fn pop_head(self: &mut Self) -> std::Opt[T] {
         """
         The pop_head() method removes the first element from the sequence, and returns it. The return value is an
         std::Opt[T], because if the sequence is empty, nothing can be returned. Popping the head can have more optimal
@@ -108,8 +96,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn pop_tail(self: &mut Self) -> std::Opt[T] {
+        fn pop_tail(self: &mut Self) -> std::Opt[T] {
         """
         The pop_tail() method removes the final element from the sequence, and returns it. The return value is an
         std::Opt[T], because if the sequence is empty, nothing can be returned. Popping the head can have more optimal
@@ -126,8 +113,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn with_head_ref(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
+        fn with_head_ref(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
         """
         The with_head(std::Fn[U, (T)]) method allows indexing specifically at the beginning of the sequence. References
         cannot be returned, so reading the value and its attributes is required inside a callback.
@@ -135,8 +121,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn with_tail(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
+        fn with_tail(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
         """
         The with_tail(std::Fn[U, (T)]) method allows indexing specifically at the beginning of the sequence. References
         cannot be returned, so reading the value and its attributes is required inside a callback.
@@ -144,8 +129,7 @@ sup[T, A: std::Alloc] std::Seq {
     }
 
     @meta::abstract_method
-    @meta::public
-    fn with_n(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
+        fn with_n(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
         """
         The with_n(std::Fn[U, (T)]) method allows indexing at specific indexes in the sequence. References cannot be
         returned, so reading the value and its attributes is required inside a callback.

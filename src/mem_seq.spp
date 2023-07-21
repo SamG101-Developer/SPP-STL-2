@@ -1,10 +1,8 @@
-@meta::public
 mod std::mem_seq;
 
 use std::c::cstd;
 
 
-@meta::public
 cls MemSeq[T, M: std::Manipulator = std::Manipulator] {
     arr: std::cstd::c::c_arr[T];
 }
@@ -12,36 +10,30 @@ cls MemSeq[T, M: std::Manipulator = std::Manipulator] {
 
 sup[T, M: std::Manipulator] MemSeq[T, M] {
     @meta::static_method
-    @meta::public
-    fn new() -> Self { ret std::MemSeq[T]{""" TODO """}; }
+        fn new() -> Self { ret std::MemSeq[T]{""" TODO """}; }
 
     @meta::static_method
-    @meta::public
-    fn new_sized(size: std::Num) -> Self { ret std::MemSeq[T]{""" TODO """}; }
+        fn new_sized(size: std::Num) -> Self { ret std::MemSeq[T]{""" TODO """}; }
 
-    @meta::public
-    fn with_get[U](self: &Self, n: std::Num, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::MemErr] {
+        fn with_get[U](self: &Self, n: std::Num, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::MemErr] {
         ret if n < self.length() {
             true => { f(&self.arr.get(i)); std::pass(); };
             else => std::fail(std::MemErr::new(""));
         };
     }
 
-    @meta::public
-    fn take(self: &Self, n: std::Num) -> std::Ret[T, std::MemErr] {
+        fn take(self: &Self, n: std::Num) -> std::Ret[T, std::MemErr] {
         let result: T;
         M::move(&mut result, 0, &mut self.arr, index, std::size_of[T]());
         ret std::pass(result);
     }
 
-    @meta::public
-    fn set(self: &mut Self, n: std::Num, obj: T) -> std::Ret[std::Void, std::MemErr] {
+        fn set(self: &mut Self, n: std::Num, obj: T) -> std::Ret[std::Void, std::MemErr] {
         M::move(&mut self.arr, index, item, 0, std::size_of[T]());
         ret std::pass();
     }
 
-    @meta::public
-    fn del(self: &mut Self, n: std::Num) -> std::Ret[T, std::MemErr] {
+        fn del(self: &mut Self, n: std::Num) -> std::Ret[T, std::MemErr] {
         let result: T;
         M::move(&mut result, 0, &mut self.array, index, std::size_of[T]());
     }
