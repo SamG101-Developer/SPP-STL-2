@@ -1,0 +1,11 @@
+mod src::examples::factorial;
+
+use std::Num;
+
+
+fn factorial(n: Num) -> Num {
+    ret if n == {
+        0 => 1;
+        else => n * factorial(n - 1);
+    };
+}

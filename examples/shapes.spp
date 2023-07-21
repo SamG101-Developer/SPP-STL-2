@@ -1,0 +1,88 @@
+mod src::examples::shapes;
+
+use std::num::Num;
+use std::str::Str;
+
+
+cls Shape {
+    """
+    Base class of all shapes - shared attributes can be given here, and abstract methods are contained by the 'sup'
+    block.
+    """
+    name: Str;
+}
+
+sup Shape {
+    """
+    The existence of abstract method in a class maeans that the class itself is abstract -- that is, there is no way to
+    create the 'Shape' class, except for use as a base class for another type. This is ensured by allowing for its
+    creation -- with {...} struct initialization syntax -- but not allowing any read or writing to it, with the
+    exception of registering it as a 'sup' object for the sub-class.
+    """
+    @meta::abstract_method fn area(self: &Self) -> Num {}
+    @meta::abstract_method fn perimiter(self: &Self) -> Num {}
+}
+
+
+cls Rectangle {
+    """
+    Define some attributes specific to the Rectangle class. These are public by default. If an attribute is annotated as
+    public, then everything else is private, and if 1 attribute is annotated as private, then only that attribute is
+    private.
+    """
+    length: Num;
+    width : Num;
+}
+
+sup Rectangle {
+    """
+    Implement any method specific to the Rectangle class in a normal 'sup' block. These methods are only available on
+    the Rectangle class itself, and can be inherited into new classes that use 'sup Rectangle for ...'.
+    """
+
+    @meta::static_method
+    fn new(l: Num, w: Num) -> Self {
+        """
+        Define the 'new' method for the Rectangle class. It is annotated as a static method, because it is used to
+        create an instance of the Rectangle class itself.
+        """
+        let shape = Shape{name: "Rectangle"};
+        let rectangle = Rectagle{length: l, width: w, sup: (shape)};
+        ret rectangle;
+    }
+}
+
+sup Shape for Rectangle {
+    """
+    Super-impose the Shape class onto the Rectangle class. This means that the Shape class is now a super-class of the
+    Rectangle class. Automatic upcasting is available.
+    """
+
+    fn area(self: &Self) -> Num {
+        """
+        The 'area' method is overridden in the Rectangle class. There is no need to annotate an override, because any
+        method in an inheriting 'sup' block is overriding a base class method.
+        """
+        ret self.length * self.width;
+    }
+}
+
+
+cls Circle {
+    radius: Num;
+}
+
+sup Circle {
+    @meta::static_method
+    fn new(r: Num) -> Self {
+        let shape = Shape{name: "Circle"};
+        let circle = Circle{radius: r, sup: (shape)};
+        ret circle;
+    }
+}
+
+sup Shape for Rectangle {
+    fn area(self: &Self) -> Num {
+        ret math::pi * radius.pow(2);
+    }
+}

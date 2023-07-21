@@ -1,0 +1,16 @@
+mod src::examples::files;
+
+use std::io::file::File;
+use std::str::Str;
+use std::void::Void;
+
+
+fn handle_file(file_name: Str) -> Void {
+    # std::io::File::open returns a std::io::File object. Because std::io::File super-imposes std::ops::With, the
+    # __enter__ method will be called on the file, which will run config code and then return "self", into the "file"
+    # variable. After the "with" block exits, the __exit__ method on the std::File object is called, cleaning up.
+    with io::File::open(file_name) as file {
+        file.write("hello world");
+        file.read() |> std::io::println(_);
+    };
+}

@@ -1,0 +1,16 @@
+mod src::examples::hello_world;
+
+use std::io::console::{println, readln};
+use std::void::Void;
+
+
+fn hello_world() -> Void {
+    """
+    Read the name from the console, using the 'readln' method. The type returned is an std::Str. Because std::Str
+    super-imposes the std::SToStr class, is means that the 'name' can be used with the ${} string syntax --
+    name.to_str() is called and the resulting Str will be inserted into the printed 'hello ...' string.
+    """
+    let name = io::readln("name: ");
+    io::println("hello ${name}");
+    io::println("#### finished ####");
+}
