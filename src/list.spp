@@ -23,14 +23,18 @@ sup[T] std::Seq[T] for std::List[T] {
     @meta::public
     fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
         let new_node = std::ListNode{inner: item};
-        if self.is_empty() { self.head = new_node; }
-        else { self.head, new_node.next = (new_node, self.head); }
+        if self.is_empty() == {
+            true => self.head = new_node;
+            else => self.head, new_node.next = (new_node, self.head);
+        };
     }
 
     @meta::public
     fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::void, std::MemErr] {
         let new_node = std::ListNode{inner: item};
-        if self.is_empty() { self.head = new_node; }
-        else { self.tail.next = std::some(new_node); }
+        if self.is_empty() == {
+            true => self.head = new_node;
+            else => self.tail.next = std::some(new_node);
+        };
     }
 }

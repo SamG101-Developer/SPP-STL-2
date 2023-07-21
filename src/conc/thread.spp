@@ -1,0 +1,59 @@
+@meta::public
+mod std::conc::thread;
+
+use std::any::Any;
+use std::bool::Bool;
+use std::c::cstd;
+use std::num::Num;
+use std::adt::Ret;
+use std::conc::fut::Fut;
+
+
+@meta::public
+cls Thread {
+    thread_id: std::Num;
+    is_detached: std::Bool;
+    is_joined: std::Bool;
+    is_alive: std::Bool;
+    auto_join: std::Bool;
+    local: std::Any;
+}
+
+
+sup Thread {
+    @meta::static_method
+    @meta::public
+    fn new(auto_join: std::Bool = false) -> Thread {
+        ret std::Thread{auto_join, else: Thread::default()};
+    }
+
+    @meta::public
+    fn start[Output, F: std::Fn[Output, (Ts)], ...Ts](self: &mut Self, target: F, ...args: Ts) -> std::Ret[Fut[Output], ThreadErr] {
+        let future = std::Fut::new();
+        let lambda = [&mut future, target, args]() => {target(...arguments) |> future.store(_);};
+
+        std::cstd::pthread_create(&mut self.thread_id, lambda, &self);
+        self.is_alive = true;
+        ret std::pass(future);
+    }
+
+    @meta::public
+    fn join(self: &Self) -> std::Ret[std::Void, std::ThreadErr] {
+        std::cstd::pthread_join(&mut self.thread_id, self)?;
+        self.is_alive = false;
+    }
+
+    @meta::public
+    fn detach(self: &Self) -> std::Ret[std::Void, std::ThreadErr] {
+        std::cstd::pthread_detach(&mut self.thread_id, self)?;
+        self.is_detached = true;
+    }
+}
+
+
+sup Del for Thread {
+    @meta::public
+    fn __del__(self: &mut Self) -> std::Void {
+        self.join();
+    }
+}

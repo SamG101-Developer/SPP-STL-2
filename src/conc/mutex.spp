@@ -1,0 +1,37 @@
+@meta::public
+mod std::conc::mutex;
+
+use std::c::cstd;
+
+
+@meta::public
+enum MutexLockType {
+    IMMEDIATE, DEFER;
+}
+
+
+@meta::public
+cls Mutex[T] {
+    mutex: std::cstd::pthread_mutex_t;
+    object: T;
+    lock_type: MutexLockType;
+}
+
+
+sup[T] Mutex[T] {
+    @meta::static_method
+    @meta::public
+    fn new(object: T, lock_type: MutexLockType = MutexLockType::DEFER) -> Self {
+        ret Mutex{object, lock_type};
+    }
+
+    @meta::public
+    fn acquire(self: &mut Self) -> std::Ret[std::Void] {
+        ret std::cstd::pthread_mutex_lock(&self.mutex);
+    }
+
+    @meta::public
+    fn release(self: &mut Self) -> std::Ret[std::Void] {
+        ret std::cstd::pthread_mutex_unlock(&self.mutex);
+    }
+}

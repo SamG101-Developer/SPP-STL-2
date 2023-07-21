@@ -61,7 +61,7 @@ sup[T, A: std::Allocator = std::Allocator[T]] std::Vec[T, A] {
     @meta::virtual_method
     @meta::public
     fn shrink_to(self: &mut Self, n: std::Num) -> std::Void {
-        self.cap = if n == -1 {self.len.copy();} else {n;};
+        self.cap = if n == { -1 => self.len.copy(); else => n; };
         A::reallocate(&mut self.data, self.cap);
     }
 

@@ -41,28 +41,11 @@ sup[A: std::Allocator, M: std::Manipulator] std::str_backend::AbstractStr[A] for
 
     @meta::public
     fn insert(self: &mut Self, index: std::Num, that: Self) -> std::Void {
-        index %= self.len;
-        if self.lhs.is_some() {
-            A::reallocate(&mut self.data, self.len + that.len.copy());
-            M::move(self.data + index, self.data + index + that.len.copy());
-            M::move(that.data, self.data + index);
-            self.len = self.data.length();
-        }
+
     }
 
     @meta::public
     fn substring(self: &Self, start: std::Num, end: std::Num) -> Self {
-        start, end = (start % self.len, end % self.len);
 
-        ret if start == end { Self::new(); }
-        elif start == 0 && end == self.len { self.copy(); }
-        elif self.len.to_bool() {
-            let mut new_data = A::allocate(end - start + 1);
-            M::copy(self.data.copy(), &mut new_data);
-            Self::new(new_data); }
-
-        elif end <= self.lhs.len { self.lhs.substring(start, end); }
-        elif start >= self.rhs.len { self.rhs.substring(start - self.lhs.length, end - self.lhs.length); }
-        else { Self::new(self.lhs.substring(start, self.lhs.len - 1), self.rhs.substring(0, end - self.lhs.length)); };
     }
 }

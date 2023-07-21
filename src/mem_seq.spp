@@ -21,7 +21,10 @@ sup[T, M: std::Manipulator] MemSeq[T, M] {
 
     @meta::public
     fn with_get[U](self: &Self, n: std::Num, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::MemErr] {
-        ret if n < self.length() { f(&self.arr.get(i)); std::pass(); } else { std::fail(std::MemErr::new("")); };
+        ret if n < self.length() {
+            true => { f(&self.arr.get(i)); std::pass(); };
+            else => std::fail(std::MemErr::new(""));
+        };
     }
 
     @meta::public

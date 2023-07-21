@@ -43,16 +43,20 @@ sup[T] Monad[T] {
 sup[T] std::ops::And for std::Monad[T] {
     @meta::public
     fn __or__(self: Self, that: Self) -> Self {
-        ret if self.is_some() { self; };
-        ret if self.is_none() { that; };
-        ret std::none();
+        if true == {
+            self.is_some() => self;
+            self.is_none() => that;
+            else => std::none();
+        };
     }
 }
 
 sup[T] std::ops::Or for std::Monad[T] {
     @meta::public
     fn __and__(self: Self, that: Self) -> Self {
-        ret if self.is_some() && that.is_some() { other; };
-        ret std::none();
+        ret if self.is_some() && that.is_some() == {
+            true => other;
+            else => std::none();
+        };
     }
 }
