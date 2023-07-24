@@ -1,40 +1,43 @@
 mod std::func;
 
+use std::bool::Bool;
+use std::tup::Tup;
 
-cls FnOnce[R, Args: std::Tup] {}
 
-cls FnMut[R, Args: std::Tup] {}
+cls FnOnce[R, Args: Tup] {}
 
-cls Fn[R, Args: std::Tup] {
-    __virtual__: std::Bool;
-    __abstract__: std::Bool;
-    __static__: std::Bool;
+cls FnMut[R, Args: Tup] {}
+
+cls Fn[R, Args: Tup] {
+    __virtual__: Bool;
+    __abstract__: Bool;
+    __static__: Bool;
 }
 
 
-sup[R, Args: std::Tup] FnOnce[R, Args] {
+sup[R, Args: Tup] FnOnce[R, Args] {
     @meta::abstract_method
-        fn __call_once__(self: Self, args: Args) -> R {}
+    fn __call_once__(self: Self, args: Args) -> R {}
 }
 
-sup[R, Args: std::Tup] FnMut[R, Args] {
+sup[R, Args: Tup] FnMut[R, Args] {
     @meta::abstract_method
-        fn __call__mut__(self: &mut Self, args: Args) -> R {}
+    fn __call__mut__(self: &mut Self, args: Args) -> R {}
 }
 
-sup[R, Args: std::Tup] Fn[R, Args] {
+sup[R, Args: Tup] Fn[R, Args] {
     @meta::abstract_method
-        fn __call_ref__(self: &Self, args: Args) -> R {}
+    fn __call_ref__(self: &Self, args: Args) -> R {}
 }
 
-sup[R, Args: std::Tup] FnOnce[R, Args] for FnMut[R, Args] {
-        fn __call_once__(self: Self, args: Args) -> R {
+sup[R, Args: Tup] FnOnce[R, Args] for FnMut[R, Args] {
+    fn __call_once__(self: Self, args: Args) -> R {
         ret self.__call_mut__(...args);
     }
 }
 
-sup[R, Args: std::Tup] FnMut[R, Args] for Fn[R, Args] {
-        fn __call_mut__(self: Self, args: Args) -> R {
+sup[R, Args: Tup] FnMut[R, Args] for Fn[R, Args] {
+    fn __call_mut__(self: Self, args: Args) -> R {
         ret self.__call_ref__(...arfs);
     }
 }

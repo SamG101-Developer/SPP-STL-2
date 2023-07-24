@@ -1,0 +1,65 @@
+mod std::iter;
+
+use std::gen::{Gen, Ref, Mut};
+use std::fun::FnRef;
+
+
+cls Iterable[T]{}
+sup[T] Iterable[T] {
+    fn iter_ref(self: &Self) -> Iterator[T] {}
+    fn iter_mut(self: &mut Self) -> Iterator[Ref[T]] {}
+    fn iter(self: Self) -> Iterator[Mut[T]] {}
+}
+
+
+sup[T] Iterator[T] {
+    use Item as T;
+
+    gn next() -> Gen[T] {}
+
+    fn filter[P: FnRef[Bool, (Self::Item)]](self: Self, pred: P) -> Filter[Self, P] {
+        ret Filter { iter=self, pred };
+    }
+
+    fn map[U, P: FnRef[U, (Self::Item)]](self: Self, pred: P) -> Map[Self, P, U] {
+        ret Map { iter=self, pred };
+    }
+}
+
+
+cls Filter[I: Iterator, P: FnRef[Bool, (I::Item)]] {
+    iter: I;
+    pred: P;
+}
+
+sup[T, I, P] Iterator[T] for Filter[I, P] where [
+        I: I::Iterator,
+        P: FnRef[Bool, (I::Item)]]{
+    use Item as I::Item;
+
+    gn next() -> Gen[T] {
+        while self.iter.has_next() {
+            if self.pred(self.iter.next()) == { true => yield &p; };
+        };
+        ret;
+    }
+}
+
+
+cls Map[I, P, U] where [I: Iterator, P: FnRef[U, (I::Item)]] {
+    iter: I;
+    pred: P;
+}
+
+sup[I, P, U] Iterator for Map[I, P, U] where [
+        I: Iterator,
+        P: FnRef[U, (I::Item)]] {
+    use Item as I::Item;
+
+    gn next() -> Gen[T] {
+        while self.iter.has_next() {
+            yield self.pred(self.iter.next());
+        };
+        ret;
+    }
+}

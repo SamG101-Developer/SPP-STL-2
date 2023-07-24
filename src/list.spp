@@ -5,10 +5,10 @@ use std::manipulator::Manipulator;
 use std::mem_seq::MemSeq;
 
 
-@meta::private(friends=(std::List[T]))
+# @meta::private(friends=(List[T])) TODO
 cls ListNode[T] {
     inner: T;
-    next: std::Opt[ListNode[T]];
+    next: Opt[ListNode[T]];
 }
 
 
@@ -17,17 +17,17 @@ cls List[T] {
 }
 
 
-sup[T] std::Seq[T] for std::List[T] {
-        fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
-        let new_node = std::ListNode{inner: item};
+sup[T] Seq[T] for List[T] {
+    fn emplace_head(self: &mut Self, item: T) -> Ret[Void, MemErr] {
+        let new_node = ListNode{inner=item};
         if self.is_empty() == {
             true => self.head = new_node;
             else => self.head, new_node.next = (new_node, self.head);
         };
     }
 
-        fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::void, std::MemErr] {
-        let new_node = std::ListNode{inner: item};
+    fn emplace_tail(self: &mut Self, item: T) -> Ret[void, MemErr] {
+        let new_node = ListNode{inner=item};
         if self.is_empty() == {
             true => self.head = new_node;
             else => self.tail.next = std::some(new_node);

@@ -6,41 +6,41 @@ use std::alg::Alg;
 
 
 cls Num {
-    real_part: std::InnerNum;
-    imag_part: std::InnerNum;
+    real_part: InnerNum;
+    imag_part: InnerNum;
 }
 
-sup std::Num {
-        fn copy_real(self: &Self) -> std::Num {
+sup Num {
+    fn copy_real(self: &Self) -> Num {
         let real_part = self.real_part.copy();
-        ret std::Num{real_part, imag_part: std::InnerNum::new()};
+        ret Num{real_part, imag_part=InnerNum::new()};
     }
 
-        fn copy_imag(self: &Self) -> std::Num {
+    fn copy_imag(self: &Self) -> Num {
         let imag_part = self.imag_part.copy();
-        ret std::Num{real_part: std::InnerNum::new(), imag_part};
+        ret Num{real_part=InnerNum::new(), imag_part};
     }
 
-        fn is_complex(self: &Self) -> std::Bool {
+    fn is_complex(self: &Self) -> Bool {
         ret self.imag_part.is_zero();
     }
 
-        fn is_zero(self: &Self) -> std::Bool {
+    fn is_zero(self: &Self) -> Bool {
         ret self.real_part.is_zero() && self.imag_part.is_zero();
     }
 }
 
 
-sup std::ops::Add for std::Num {
-        fn __add__(self: &Self, that: Self) -> Self {
+sup ops::Add for Num {
+    fn __add__(self: &Self, that: Self) -> Self {
         let real_part = self.real_part + that.real_part;
         let imag_part = self.imag_part + that.imag_part;
         ret Self{real_part, imag_part};
     }
 }
 
-sup std::ops::AddAssign for std::Num {
-        fn __add_assign__(self: &Self, that: Self) -> std::Void {
+sup ops::AddAssign for Num {
+    fn __add_assign__(self: &Self, that: Self) -> Void {
         self.real_part += that.real_part;
         self.imag_part += that.imag_part;
     }
@@ -48,13 +48,13 @@ sup std::ops::AddAssign for std::Num {
 
 
 cls InnerNum {
-    mut int_part: std::Vec[SingleDigitT];
-    mut dec_part: std::Vec[SingleDigitT];
-    is_imag: std::Bool;
-    base: std::cstd::U32;
+    mut int_part: Vec[SingleDigitT];
+    mut dec_part: Vec[SingleDigitT];
+    is_imag: Bool;
+    base: cU32;
 }
 
-sup std::InnerNum {
-    use SingleDigitT as std::cstd::U32;
-    use DoubleDigitT as std::cstd::U64;
+sup InnerNum {
+    use SingleDigitT as cU32;
+    use DoubleDigitT as cU64;
 }

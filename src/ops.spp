@@ -4,5 +4,5 @@ mod std::ops;
 cls BitNot[Output] {}
 sup[Output=std::Bool] BitNot[Output] {
     @meta::abstract_method
-        fn __bit_not__(self: &Self) -> Output {}
+    fn __bit_not__(self: &Self) -> Output {}
 }

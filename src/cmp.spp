@@ -11,11 +11,11 @@ sup Cmp {
     Simple utility class to allow for value selection based on comparisions.
     """
 
-        fn max[T](a: T, b: T) -> T {}
+    fn max[T](a: T, b: T) -> T {}
 
-        fn min[T](a: T, b: T) -> T {}
+    fn min[T](a: T, b: T) -> T {}
 
-        fn clamp[T](a: T, min: T, max: T) -> T {}
+    fn clamp[T](a: T, min: T, max: T) -> T {}
 
-        fn is_btwn[T](a: T, min: T, max: T) -> T {}
+    fn is_btwn[T](a: T, min: T, max: T) -> T {}
 }

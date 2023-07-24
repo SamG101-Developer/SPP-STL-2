@@ -3,37 +3,37 @@ mod std::mem_seq;
 use std::c::cstd;
 
 
-cls MemSeq[T, M: std::Manipulator = std::Manipulator] {
-    arr: std::cstd::c::c_arr[T];
+cls MemSeq[T, M: Manip = Manip] {
+    arr: C::c_arr[T];
 }
 
 
-sup[T, M: std::Manipulator] MemSeq[T, M] {
+sup[T, M: Manip] MemSeq[T, M] {
     @meta::static_method
-        fn new() -> Self { ret std::MemSeq[T]{""" TODO """}; }
+    fn new() -> Self { ret MemSeq[T]{""" TODO """}; }
 
     @meta::static_method
-        fn new_sized(size: std::Num) -> Self { ret std::MemSeq[T]{""" TODO """}; }
+    fn new_sized(size: Num) -> Self { ret MemSeq[T]{""" TODO """}; }
 
-        fn with_get[U](self: &Self, n: std::Num, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::MemErr] {
-        ret if n < self.length() {
-            true => { f(&self.arr.get(i)); std::pass(); };
-            else => std::fail(std::MemErr::new(""));
-        };
+    gn get[U](self: &Self, n: Num) -> Gen[Ret[Ref[T], MemErr]] {
+        obj = self.take(n);
+        yield &obj;
+        self.set(n, obj);
+        ret;
     }
 
-        fn take(self: &Self, n: std::Num) -> std::Ret[T, std::MemErr] {
+    fn take(self: &Self, n: Num) -> Ret[T, MemErr] {
         let result: T;
         M::move(&mut result, 0, &mut self.arr, index, std::size_of[T]());
         ret std::pass(result);
     }
 
-        fn set(self: &mut Self, n: std::Num, obj: T) -> std::Ret[std::Void, std::MemErr] {
+    fn set(self: &mut Self, n: Num, obj: T) -> Ret[Void, MemErr] {
         M::move(&mut self.arr, index, item, 0, std::size_of[T]());
         ret std::pass();
     }
 
-        fn del(self: &mut Self, n: std::Num) -> std::Ret[T, std::MemErr] {
+    fn del(self: &mut Self, n: Num) -> Ret[T, MemErr] {
         let result: T;
         M::move(&mut result, 0, &mut self.array, index, std::size_of[T]());
     }

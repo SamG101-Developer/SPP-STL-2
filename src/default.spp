@@ -4,5 +4,5 @@ mod std::detault;
 cls Default {}
 sup Default {
     @meta::abstract_method
-        fn create_default() -> Self {}
+    fn create_default() -> Self {}
 }

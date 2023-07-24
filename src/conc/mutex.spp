@@ -9,7 +9,7 @@ enum MutexLockType {
 
 
 cls Mutex[T] {
-    mutex: std::cstd::pthread_mutex_t;
+    mutex: C::PThreadMutexT;
     object: T;
     lock_type: MutexLockType;
 }
@@ -17,15 +17,15 @@ cls Mutex[T] {
 
 sup[T] Mutex[T] {
     @meta::static_method
-        fn new(object: T, lock_type: MutexLockType = MutexLockType::DEFER) -> Self {
+    fn new(object: T, lock_type: MutexLockType = MutexLockType::DEFER) -> Self {
         ret Mutex{object, lock_type};
     }
 
-        fn acquire(self: &mut Self) -> std::Ret[std::Void] {
-        ret std::cstd::pthread_mutex_lock(&self.mutex);
+    fn acquire(self: &mut Self) -> Ret[Void, ThreadErr] {
+        ret C::pthread_mutex_lock(&self.mutex);
     }
 
-        fn release(self: &mut Self) -> std::Ret[std::Void] {
-        ret std::cstd::pthread_mutex_unlock(&self.mutex);
+    fn release(self: &mut Self) -> Ret[Void, ThreadErr] {
+        ret C::pthread_mutex_unlock(&self.mutex);
     }
 }

@@ -1,45 +1,47 @@
 @meta::private
 mod std::str_backend::rope_str;
 
-use std::allocator::Allocator;
+use std::alloc::Alloc;
 use std::char::Char;
+use std::manip::Manip;
 use std::mem_seq::MemSeq;
 use std::num::Num;
-use std::string_backend::abstract_str::AbstractStr;
+use std::opt;
+use std::str_backend::detail::AbsStr;
 
 
-cls RopeStr[A: std::Allocator = std::Allocator, M: std::Manipulator = std::Manipulator] {
-    @meta::protected mut data: std::MemSeq[std::Char];
-    @meta::protected mut lhs: std::Opt[Self];
-    @meta::protected mut rhs: std::Opt[Self];
-    @meta::protected mut len: std::Num;
+cls RopeStr[A: Alloc = Alloc, M: Manip = Manip] {
+    @meta::protected mut data: MemSeq[Char];
+    @meta::protected mut lhs: Opt[Self];
+    @meta::protected mut rhs: Opt[Self];
+    @meta::protected mut len: Num;
 }
 
 
-sup[A: std::Allocator, M: std::Manipulator] std::str_backend::RopeStr[A] {
+sup[A: Alloc, M: Manip] RopeStr[A] {
     @meta::static_method
-        fn new(data: std::MemSeq[std::Char]) -> Self {
-        ret std::str_backend::RopeStr{data, lhs: std::none(), rhs: std::none(), len: data.length()};
+    fn new(data: MemSeq[Char]) -> Self {
+        ret RopeStr{data, lhs=std::none(), rhs=std::none(), len=data.length()};
     }
 
     @meta::static_method
-        fn new(lhs: Self, rhs: Self) -> Self {
+    fn new(lhs: Self, rhs: Self) -> Self {
         let len = lhs.len + rhs.len;
-        ret std::str_backend::RopeStr{data: std::MemSeq[std::Char]::new(), lhs, rhs, len};
+        # ret RopeStr{data=MemSeq[Char]::new(), lhs, rhs, len}; TODO
     }
 }
 
 
-sup[A: std::Allocator, M: std::Manipulator] std::str_backend::AbstractStr[A] for std::str_backend::RopeStr[A] {
-        fn length(self: &Self) -> std::Num {
+sup[A: Alloc, M: Manip] AbsStr[A] for RopeStr[A] {
+    fn length(self: &Self) -> Num {
         ret self.len.copy();
     }
 
-        fn insert(self: &mut Self, index: std::Num, that: Self) -> std::Void {
+    fn insert(self: &mut Self, index: Num, that: Self) -> Void {
 
     }
 
-        fn substring(self: &Self, start: std::Num, end: std::Num) -> Self {
+    fn substring(self: &Self, start: Num, end: Num) -> Self {
 
     }
 }

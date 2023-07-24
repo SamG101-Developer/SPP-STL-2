@@ -2,28 +2,28 @@ mod std::str;
 
 
 @meta::unstable(feature="Str", issue="1")
-cls Str[B: std::AbstractStrBackend] {
+cls Str[B: AbstractStrBackend] {
     backend: B;
 }
 
 cls ToStr {}
 
 
-sup[B: std::AbstractStrBackend] std::Str[B] {
-        fn append[B](self: &mut Self, that: std::Str[B]) -> std::Void {
+sup[B: AbstractStrBackend] Str[B] {
+    fn append[B](self: &mut Self, that: Str[B]) -> Void {
         self.backend.replace(self.backend.len, 0, that);
     }
 
-        fn prepend[B](self: &mut Self, that: std::Str[B]) -> std::Void {
+    fn prepend[B](self: &mut Self, that: Str[B]) -> Void {
         self.backend.replace(0, self.backend.len, that);
     }
 
-        fn clear(self: &mut Self) -> std::Void {
+    fn clear(self: &mut Self) -> Void {
         self.backend.replace(0, self.backend.len, "");
     }
 }
 
-sup std::ToStr {
-        @meta::abstract_method
-    fn to_str(self: &Self) -> std::Str {}
+sup ToStr {
+    @meta::abstract_method
+    fn to_str(self: &Self) -> Str {}
 }

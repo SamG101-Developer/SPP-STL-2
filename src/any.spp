@@ -10,19 +10,19 @@ cls Any { storage: BaseStorage; }
 
 sup Any {
     @meta::static_method
-        fn new[T](value: T) -> std::Any {
-        ret std::Any{storage: std::Storage{value}};
+    fn new[T](value: T) -> std::Any {
+        ret Any{storage=Storage{value}};
     }
 
-        fn to[T](self: Self) -> T {
-        let cast_storage = std::down_cast[std::BaseStorage[T]](self.storage);
+    fn to[T](self: Self) -> T {
+        let cast_storage = self.storage.down_cast[std::BaseStorage[T]]();
         ret cast_storage.value;
     }
 }
 
 
-sup std::Default for std::Any {
-        fn default() -> Self {
-        ret std::Any::new[std::Void]();
+sup ops::Default for Any {
+    fn default() -> Self {
+        ret Any::new[Void]();
     }
 }

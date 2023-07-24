@@ -1,15 +1,15 @@
 mod std::alloc;
 
-use std::c::cstd;
+use std::c::C;
 use std::mem_seq::MemSeq;
 use std::num::Num;
 use std::Ret::Ret;
 
 
-cls Allocator[T]{}
+cls Alloc[T]{}
 
 
-sup[T] std::Allocator[T] {
+sup[T] std::Alloc[T] {
     """
     The standard allocator uses the `malloc`, `realloc` and `free` methods from the cstd library, which map to the
     respective C functions.
@@ -17,46 +17,46 @@ sup[T] std::Allocator[T] {
       - allocated_type: Type of object wrapping the (multiple) allocations for `T`
     """
     
-    @meta::public use ValueType as T;
-    @meta::public use AllocType as std::MemSeq[T];
+    use ValueType as T;
+    use AllocType as MemSeq[T];
 
     @meta::static_method
     @meta::virtual_method
-        fn allocate(n: std::Num) -> std::Ret[Self::AllocType, std::MemErr] {
+    fn allocate(n: Num) -> Ret[Self::AllocType, MemErr] {
         """
-        Method that allocates a memory sequence of `T` type objects. It uses the `malloc` method, the standard C allocator
-        to obtain the memory. The memory is wrapped into the `allocated_type` in the cstd library. `std::result` is
+        Method that allocates a memory sequence of `T` type objects. It uses the `malloc` method, the standard C
+        allocator to obtain the memory. The memory is wrapped into the `allocated_type` in the cstd library. `Ret` is
         returned, as there can be errors in allocating memory.
           - n => number of `T` objects to allocate in the memory sequence (not the byte-size)
         """
 
-        ret std::cstd::malloc[T](n);
+        ret C::malloc[T](n);
     }
 
     @meta::static_method
     @meta::virtual_method
-        fn reallocate(data: &mut Self::AllocType, n: std::Num) -> std::Ret[std::Void, std::MemErr] {
+    fn reallocate(data: &mut Self::AllocType, n: Num) -> Ret[Void, MemErr] {
         """
         Method that reallocates a memory sequence of `T` type objects. It uses the `realloc` method, the standard C
-        re-allocator to resize the current memory sequence. It takes a mutable reference to the data, and re-allocates it
-        to a different size. There is a memory error if attempting to re-allocate a smaller size when there are objects in
-        the section of the memory_sequence that is to be removed.
+        re-allocator to resize the current memory sequence. It takes a mutable reference to the data, and re-allocates
+        it to a different size. There is a memory error if attempting to re-allocate a smaller size when there are
+        objects in the section of the memory_sequence that is to be removed.
           - data => memory sequence to be re-allocated
           - n    => number of `T` objects to re-allocate the memory sequence to (not the new byte-size)
         """
-        ret std::cstd::realloc(data, n);
+        ret C::realloc(data, n);
     }
 
     @meta::static_method
     @meta::virtual_method
-        fn deallocate(data: Self::AllocType) -> std::Ret[std::Void, std::MemErr] {
+    fn deallocate(data: Self::AllocType) -> Ret[Void, MemErr] {
         """
         Method that de-allocated a memory sequence of `T` type objects. It uses the `realloc` method, the standard C
-        de-allocator. It takes ownership of the `std::mem_seq<T>` as it is not longer usable in the rest of the code after
+        de-allocator. It takes ownership of the `MemSeq[T]` as it is not longer usable in the rest of the code after
         de-allocation. There is a memory error if attempting to de-allocate memory that still contains objects in.
           - data => memory sequence to be de-allocated
         """
 
-        ret std::cstd::free(data);
+        ret C::free(data);
     }
 }

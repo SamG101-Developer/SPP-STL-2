@@ -6,17 +6,17 @@ use std::num::Num;
 
 
 cls Iterable[T] {}
-sup[T] std::Iterable[T] {
+sup[T] Iterable[T] {
     @meta::abstract_method
-        fn iter(self: &Self) -> std::Iter[Self, T] {}
+    fn iter(self: &Self) -> Iter[Self, T] {}
 
     @mets::abstract_method
-        fn iter_mut(self: &mut Self) -> std::Iter[Self, T] {}
+    fn iter_mut(self: &mut Self) -> Iter[Self, T] {}
 }
 
 
-cls Collection[T, A: std::Alloc] { mut len: std::Num; }
-sup[T, A: std::Allocator] std::Collection[T, A] {
+cls Collection[T, A: Alloc] { mut len: Num; }
+sup[T, A: Allocator] Collection[T, A] {
     """
     Basic types for an astract collection
       - `ValueType` => the type of object being contained in the collection (owned or a reference)
@@ -26,7 +26,7 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
     use AllocType as A;
 
     @meta::virtual_method
-        fn length(self: &Self) -> std::Num {
+    fn length(self: &Self) -> Num {
         """
         Standard length() method used to get the length of the collection. A method is defined so that if the length
         must be determined algorithmically, and not by using self.length, then this is possible. The default
@@ -36,7 +36,7 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
     }
 
     @meta::virtual_method
-        fn is_empty(self: &Self) -> std::Bool {
+    fn is_empty(self: &Self) -> Bool {
         """
         The is_empty() method is used to check is a collection is an empty collection. An empty collection is a
         collection containing 0 elements. The default implementation is to check self.length against 0, but this can be
@@ -46,7 +46,7 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
     }
 
     @meta::virtual_method
-        fn clear(self: &mut Self) -> std::Void {
+    fn clear(self: &mut Self) -> Void {
         """
         The clear() method is used to clear a collection of all its elements. This will almost always have to be
         re-implemented, unless the derived class is also abstract. The default implementation is to set the self.length
@@ -57,81 +57,82 @@ sup[T, A: std::Allocator] std::Collection[T, A] {
 }
 
 
-cls Seq[T, A: std::Alloc] {}
+cls Seq[T, A: Alloc] {}
 
-sup[T, A: std::Alloc] std::Seq {
+sup[T, A: Alloc] Seq {
     @meta::abstract_method
-        fn emplace_head(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+    fn emplace_head(self: &mut Self, item: T) -> Ret[Void, MemErr] {
         """
         The emplace_head(T) method adds a new element to the beginning of the sequence. This is generally implemented as
-        a wrapper to inserting at the 0th index. However, in certain collections, ie std::Deque[T], there are more
+        a wrapper to inserting at the 0th index. However, in certain collections, ie Deque[T], there are more
         optimal ways to insert at the beginning of the collection.
         """
     }
 
     @meta::abstract_method
-        fn emplace_tail(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+    fn emplace_tail(self: &mut Self, item: T) -> Ret[Void, MemErr] {
         """
         The emplace_tail(T) method adds a new element to the end of the sequence. This normally has a more optimal
-        implementation as a special-case optimization, for example in std::Vec[T], the end-insertion required no
-        shfiting compared to the insert(T, std::Num) method.
+        implementation as a special-case optimization, for example in Vec[T], the end-insertion required no
+        shfiting compared to the insert(T, Num) method.
         """
     }
 
     @meta::abstract_method
-        fn emplace(self: &mut Self, item: T) -> std::Ret[std::Void, std::MemErr] {
+    fn emplace(self: &mut Self, item: T) -> Ret[Void, MemErr] {
         """
-        The emplace(T, std::Num) method adds a new element into the middle of a sequence -- random insertion. This is
+        The emplace(T, Num) method adds a new element into the middle of a sequence -- random insertion. This is
         generally the most suboptimal insertion method for a sequence because of element shifting.
         """
     }
 
     @meta::abstract_method
-        fn pop_head(self: &mut Self) -> std::Opt[T] {
+    fn pop_head(self: &mut Self) -> Opt[T] {
         """
         The pop_head() method removes the first element from the sequence, and returns it. The return value is an
-        std::Opt[T], because if the sequence is empty, nothing can be returned. Popping the head can have more optimal
-        implementations than the general pop(std::Num) -- see std::Deque.
+        Opt[T], because if the sequence is empty, nothing can be returned. Popping the head can have more optimal
+        implementations than the general pop(Num) -- see Deque.
         """
     }
 
     @meta::abstract_method
-        fn pop_tail(self: &mut Self) -> std::Opt[T] {
+    fn pop_tail(self: &mut Self) -> Opt[T] {
         """
         The pop_tail() method removes the final element from the sequence, and returns it. The return value is an
-        std::Opt[T], because if the sequence is empty, nothing can be returned. Popping the head can have more optimal
-        implementations than the general pop(std::Num) -- see std::Deque.
+        Opt[T], because if the sequence is empty, nothing can be returned. Popping the head can have more optimal
+        implementations than the general pop(Num) -- see Deque.
         """
     }
 
-    @meta::abstract_method @meta::public fn pop(self: &mut Self, index: std::Num) -> std::Opt[T] {
+    @meta::abstract_method
+    fn pop(self: &mut Self, index: Num) -> Opt[T] {
         """
-        The pop(std::Num) method removes the nth element from the sequence, and returns it. The return value is an
-        std::Opt[T], because if the sequence is empty, nothing can be returned. This is the general method to remove an
+        The pop(Num) method removes the nth element from the sequence, and returns it. The return value is an
+        Opt[T], because if the sequence is empty, nothing can be returned. This is the general method to remove an
         item from the middle of a sequence.
         """
     }
 
     @meta::abstract_method
-        fn with_head_ref(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
+    gn at_head(self: &Self) -> Gen[Ret[Ref[T], IndexErr]] {
         """
-        The with_head(std::Fn[U, (T)]) method allows indexing specifically at the beginning of the sequence. References
+        The with_head(Fn[U, (T)]) method allows indexing specifically at the beginning of the sequence. References
         cannot be returned, so reading the value and its attributes is required inside a callback.
         """
     }
 
     @meta::abstract_method
-        fn with_tail(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
+    gn at_tail(self: &Self) -> Gen[Ret[Ref[T], IndexErr]] {
         """
-        The with_tail(std::Fn[U, (T)]) method allows indexing specifically at the beginning of the sequence. References
+        The with_tail(Fn[U, (T)]) method allows indexing specifically at the beginning of the sequence. References
         cannot be returned, so reading the value and its attributes is required inside a callback.
         """
     }
 
     @meta::abstract_method
-        fn with_n(self: &Self, f: std::Fn[U, (T)]) -> std::Ret[std::Void, std::IndexErr] {
+    gn at_n(self: &Self) -> Gen[Ret[Ref[T], IndexErr]] {
         """
-        The with_n(std::Fn[U, (T)]) method allows indexing at specific indexes in the sequence. References cannot be
+        The with_n(Fn[U, (T)]) method allows indexing at specific indexes in the sequence. References cannot be
         returned, so reading the value and its attributes is required inside a callback.
         """
     }

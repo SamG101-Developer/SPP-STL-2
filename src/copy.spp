@@ -2,7 +2,7 @@ mod std::copy;
 
 
 cls Copy {}
-sup std::Copy {
+sup Copy {
     @meta::abstract_method
-        fn copy() -> Self {}
+    fn copy() -> Self {}
 }
